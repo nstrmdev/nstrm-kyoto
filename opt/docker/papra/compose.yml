@@ -1,0 +1,24 @@
+# /opt/docker/papra/compose.yml
+
+services:
+  papra:
+    image: ghcr.io/papra-hq/papra:26.6.2-rootless
+    container_name: papra
+    restart: unless-stopped
+    user: "${PUID:-1001}:${PGID:-1001}"
+
+    volumes:
+      - /srv/docker/papra:/app/app-data
+
+    environment:
+      APP_BASE_URL: ${APP_BASE_URL}
+      AUTH_SECRET: ${AUTH_SECRET}
+      AUTH_IS_REGISTRATION_ENABLED: ${AUTH_IS_REGISTRATION_ENABLED:-false}
+      AUTH_IP_ADDRESS_HEADERS: cf-connecting-ip
+
+    networks:
+      - cloudflared
+
+networks:
+  cloudflared:
+    external: true
