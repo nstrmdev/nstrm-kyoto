@@ -1,0 +1,19 @@
+# /opt/docker/arcane/compose.yml
+
+services:
+  arcane:
+    image: quay.io/getarcaneapp/manager:latest
+    container_name: arcane
+    ports:
+      - '3552:3552'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - arcane-data:/app/data
+    environment:
+      - ENCRYPTION_KEY=your-32-char-encryption-key
+      - TZ=UTC
+    cgroup: host
+    restart: unless-stopped
+
+volumes:
+  arcane-data:
