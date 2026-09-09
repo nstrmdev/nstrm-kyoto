@@ -1,0 +1,5 @@
+# /etc/docker/daemon.json
+
+{
+  "log-driver": "local"
+}
