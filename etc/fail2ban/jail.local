@@ -14,4 +14,5 @@ enabled   = true
 port      = 22
 filter    = sshd
 banaction = ufw
-logpath   = /var/log/auth.log
+# Read SSH authentication events directly from the systemd journal.
+backend   = systemd
