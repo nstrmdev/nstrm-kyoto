@@ -2,18 +2,32 @@
 
 services:
   arcane:
-    image: quay.io/getarcaneapp/manager:latest
+    image: ghcr.io/getarcaneapp/manager:latest
     container_name: arcane
-    ports:
-      - '3552:3552'
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - arcane-data:/app/data
-    environment:
-      - ENCRYPTION_KEY=your-32-char-encryption-key
-      - TZ=UTC
-    cgroup: host
     restart: unless-stopped
 
-volumes:
-  arcane-data:
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /srv/docker/arcane:/app/data
+      - /opt/docker:/opt/docker
+
+    environment:
+      APP_URL: ${APP_URL}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      PROJECTS_DIRECTORY: ${PROJECTS_DIRECTORY}
+      PUID: ${PUID}
+      PGID: ${PGID}
+
+    networks:
+      - cloudflared
+
+    healthcheck:
+      test: ["CMD", "./arcane", "health", "--timeout", "2s"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
+
+networks:
+  cloudflared:
+    external: true
