@@ -2,9 +2,11 @@
 
 services:
   arcane:
-    image: ghcr.io/getarcaneapp/manager:latest
+    image: ghcr.io/getarcaneapp/manager:v2.10.2
     container_name: arcane
     restart: unless-stopped
+    # Help Arcane identify its own container when performing self-upgrades.
+    cgroup: host
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
