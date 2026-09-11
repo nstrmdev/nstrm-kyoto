@@ -7,6 +7,7 @@ sudo ufw default deny incoming
 sudo ufw default allow outgoing
 
 sudo ufw limit 22/tcp comment 'ssh'
+sudo ufw allow 2222/tcp comment 'forgejo ssh'
 
 sudo ufw --force enable
 
