@@ -12,8 +12,16 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /srv/docker/arcane:/app/data
       - /opt/docker:/opt/docker
+      # Supply a static shell directly from an image.
+      - type: image
+        source: busybox:1.38.0-musl
+        target: /opt/arcane-shell
+        read_only: true
+        image:
+          subpath: bin
 
     environment:
+      PATH: /app:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/arcane-shell
       APP_URL: ${APP_URL}
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
       PROJECTS_DIRECTORY: ${PROJECTS_DIRECTORY}
