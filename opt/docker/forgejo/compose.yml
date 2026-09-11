@@ -12,6 +12,8 @@ services:
       - /srv/docker/forgejo/config:/etc/gitea
 
     environment:
+      # Username fallback when PUID has no entry in the image's /etc/passwd.
+      USER: git
       FORGEJO__database__DB_TYPE: sqlite3
       FORGEJO__database__PATH: /var/lib/gitea/data/forgejo.db
       FORGEJO__server__DOMAIN: ${APP_DOMAIN:?Set APP_DOMAIN to your Forgejo hostname}
