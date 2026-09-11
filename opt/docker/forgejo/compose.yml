@@ -1,0 +1,36 @@
+# /opt/docker/forgejo/compose.yml
+
+services:
+  forgejo:
+    image: codeberg.org/forgejo/forgejo:15.0.8-rootless
+    container_name: forgejo
+    restart: unless-stopped
+    user: "${PUID:-1001}:${PGID:-1001}"
+
+    volumes:
+      - /srv/docker/forgejo/data:/var/lib/gitea
+      - /srv/docker/forgejo/config:/etc/gitea
+
+    environment:
+      FORGEJO__database__DB_TYPE: sqlite3
+      FORGEJO__database__PATH: /var/lib/gitea/data/forgejo.db
+      FORGEJO__server__DOMAIN: ${APP_DOMAIN:?Set APP_DOMAIN to your Forgejo hostname}
+      FORGEJO__server__ROOT_URL: https://${APP_DOMAIN}/
+      FORGEJO__server__PROTOCOL: http
+      FORGEJO__server__HTTP_ADDR: 0.0.0.0
+      FORGEJO__server__HTTP_PORT: "3000"
+      FORGEJO__server__DISABLE_SSH: "true"
+      FORGEJO__server__START_SSH_SERVER: "false"
+      FORGEJO__service__DISABLE_REGISTRATION: "true"
+      FORGEJO__service__ENABLE_REVERSE_PROXY_AUTHENTICATION: "false"
+      FORGEJO__repository__DEFAULT_PRIVATE: private
+      # Override the v15 container's wildcard. Add the tunnel network in .env.
+      FORGEJO__security__REVERSE_PROXY_TRUSTED_PROXIES: ${REVERSE_PROXY_TRUSTED_PROXIES:-127.0.0.0/8,::1/128}
+      FORGEJO__session__COOKIE_SECURE: "true"
+
+    networks:
+      - cloudflared
+
+networks:
+  cloudflared:
+    external: true
